@@ -150,7 +150,9 @@ class HBNBCommand(cmd.Cmd):
                 kwargs[arr[0]] = int(arr[1])
             else:
                 rm_quote = arr[1].split('"')
-                kwargs[arr[0]] = rm_quote[1]
+                rm_quote = '"'.join(rm_quote[1:-1])
+                # rm_quote = arr[1].split('"')
+                kwargs[arr[0]] = rm_quote
 
         arg_val = handleArg(splited_args[0], **kwargs)
         new_instance = HBNBCommand.classes[splited_args[0]]()
