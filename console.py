@@ -11,7 +11,8 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 
-#delete down
+
+# delete down
 def handleArg(*args, **kwargs):
     ignore = ('id', 'created_at', 'updated_at', '__class__')
     twargs = {}
@@ -25,7 +26,8 @@ def handleArg(*args, **kwargs):
         else:
             twargs[key] = val
     return (twargs)
-#delete up
+# delete up
+
 
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
@@ -147,17 +149,17 @@ class HBNBCommand(cmd.Cmd):
                 kwargs[arr[0]] = int(arr[1])
             else:
                 rm_quote = arr[1].split('"')
-                kwargs[arr[0]]= rm_quote[1]
+                kwargs[arr[0]] = rm_quote[1]
 
         arg_val = handleArg(splited_args[0], **kwargs)
         new_instance = HBNBCommand.classes[splited_args[0]]()
         for key, value in arg_val.items():
-                setattr(new_instance, key, value)
+            setattr(new_instance, key, value)
         new_instance.save()
-        #new_instance = HBNBCommand.classes[args]()
-        #storage.save()
+        # new_instance = HBNBCommand.classes[args]()
+        # storage.save()
         print(new_instance.id)
-        #storage.save()
+        # storage.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -352,6 +354,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
