@@ -14,6 +14,7 @@ from models.review import Review
 
 # delete down
 def handleArg(*args, **kwargs):
+    '''function to filter cmd args'''
     ignore = ('id', 'created_at', 'updated_at', '__class__')
     twargs = {}
     for key, val in kwargs.items():
