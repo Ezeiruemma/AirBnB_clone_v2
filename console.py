@@ -11,6 +11,21 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 
+#delete down
+def handleArg(*args, **kwargs):
+    ignore = ('id', 'created_at', 'updated_at', '__class__')
+    twargs = {}
+    for key, val in kwargs.items():
+        if key in ignore:
+            continue
+        if type(val) is str:
+            val = val.split('_')
+            val = ' '.join(val)
+            twargs[key] = '{}'.format(val)
+        else:
+            twargs[key] = val
+    return (twargs)
+#delete up
 
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
@@ -118,13 +133,31 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+        elif args.split()[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
+        splited_args = args.split()
+        method_arg = splited_args[1:]
+        kwargs = {}
+        for i in method_arg:
+            arr = i.split('=')
+            if '.' in arr[1] and arr[1][0] != '"':
+                kwargs[arr[0]] = float(arr[1])
+            elif arr[1][0] != '"':
+                kwargs[arr[0]] = int(arr[1])
+            else:
+                rm_quote = arr[1].split('"')
+                kwargs[arr[0]]= rm_quote[1]
+
+        arg_val = handleArg(splited_args[0], **kwargs)
+        new_instance = HBNBCommand.classes[splited_args[0]]()
+        for key, value in arg_val.items():
+                setattr(new_instance, key, value)
+        new_instance.save()
+        #new_instance = HBNBCommand.classes[args]()
+        #storage.save()
         print(new_instance.id)
-        storage.save()
+        #storage.save()
 
     def help_create(self):
         """ Help information for the create method """
