@@ -27,7 +27,7 @@ class DBStorage:
         db_name = os.getenv('HBNB_MYSQL_DB')
         env = os.getenv('HBNB_ENV')
         DATABASE_URL = "mysql+mysqldb://{}:{}@{}:3306/{}".format(
-            user, urllib.parse.quote_plus(pword), host, db_name
+            user, pword, host, db_name
         )
         self.__engine = create_engine(
             DATABASE_URL,
@@ -40,10 +40,17 @@ class DBStorage:
         """Returns a dictionary of models currently in storage"""
         objects = dict()
         all_classes = (User, State, City, Amenity, Place, Review)
-        query = self.__session.query(*all_classes if cls is None else cls)
-        for obj in query.all():
-            obj_key = '{}.{}'.format(obj.__class__.__name__, obj.id)
-            objects[obj_key] = obj
+        if cls is None:
+            for class_type in all_classes:
+                query = self.__session.query(class_type)
+                for obj in query.all():
+                    obj_key = '{}.{}'.format(obj.__class__.__name__, obj.id)
+                    objects[obj_key] = obj
+        else:
+            query = self.__session.query(cls)
+            for obj in query.all():
+                obj_key = '{}.{}'.format(obj.__class__.__name__, obj.id)
+                objects[obj_key] = obj
         return objects
 
     def delete(self, obj=None):
@@ -73,3 +80,7 @@ class DBStorage:
             expire_on_commit=False
         )
         self.__session = scoped_session(SessionFactory)()
+
+    def close(self):
+        """Closes the storage engine."""
+        self.__session.close()
