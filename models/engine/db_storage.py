@@ -5,22 +5,22 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 import urllib.parse
 
-from models.base_model import Base
-from models.user import User
+from models.base_model import BaseModel, Base
 from models.state import State
 from models.city import City
+from models.user import User
+from models.place import Place, place_amenity
 from models.amenity import Amenity
-from models.place import Place
 from models.review import Review
 
 
 class DBStorage:
-    """SQL database Storage"""
+    """This class manages storage of hbnb models in a SQL database"""
     __engine = None
     __session = None
 
-    def __init__(self, cls=None):
-        """Initialization of the SQL database storage"""
+    def __init__(self):
+        """Initializes the SQL database storage"""
         user = os.getenv('HBNB_MYSQL_USER')
         pword = os.getenv('HBNB_MYSQL_PWD')
         host = os.getenv('HBNB_MYSQL_HOST')
@@ -34,7 +34,7 @@ class DBStorage:
             pool_pre_ping=True
         )
         if env == 'test':
-            Base.metadata.drop_all()
+            Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
@@ -56,17 +56,21 @@ class DBStorage:
     def delete(self, obj=None):
         """Removes an object from the storage database"""
         if obj is not None:
-            self.__session.query(
-                type(obj)).filter(
-                    type(obj).id == obj.id
-                ).delete(synchronize_session=False)
+            self.__session.query(type(obj)).filter(
+                type(obj).id == obj.id).delete(
+                synchronize_session=False
+            )
 
     def new(self, obj):
         """Adds new object to storage database"""
         if obj is not None:
-            self.__session.add(obj)
-            self.__session.flush()
-            self.__session.refresh(obj)
+            try:
+                self.__session.add(obj)
+                self.__session.flush()
+                self.__session.refresh(obj)
+            except Exception as ex:
+                self.__session.rollback()
+                raise ex
 
     def save(self):
         """Commits the session changes to database"""
