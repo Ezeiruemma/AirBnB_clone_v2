@@ -57,7 +57,7 @@ HTML_FILE="<!DOCTYPE html>
 "
 
 echo -e "$HTML_FILE" > /data/web_static/releases/test/index.html
-bash -c "echo -e '$SERVER_CONFIG' > /etc/nginx/sites-available/default"
+bash -c "echo -e '$CONFIG' > /etc/nginx/sites-available/default"
 ln -sf '/etc/nginx/sites-available/default' '/etc/nginx/sites-enabled/default'
 
 # start or restart server
