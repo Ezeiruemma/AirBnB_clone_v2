@@ -10,7 +10,7 @@ echo -e "Ceci n\x27est pas une page" > /var/www/error/404.html
 # Create a symbolic link
 [ -d /data/web_static/current ] && rm -rf /data/web_static/current
 ln -sf /data/web_static/releases/test/ /data/web_static/current
-chown -hR ubuntu:ubuntu /data/
+chown -R ubuntu:ubuntu /data/
 ln -sf '/etc/nginx/sites-available/default' '/etc/nginx/sites-enabled/default'
 
 # Server configuration
