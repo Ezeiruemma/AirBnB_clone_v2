@@ -10,7 +10,6 @@ echo -e "Ceci n\x27est pas une page" > /var/www/error/404.html
 # Create a symbolic link
 [ -d /data/web_static/current ] && rm -rf /data/web_static/current
 ln -sf /data/web_static/releases/test/ /data/web_static/current
-chown -R ubuntu:ubuntu /data/
 ln -sf '/etc/nginx/sites-available/default' '/etc/nginx/sites-enabled/default'
 
 # Server configuration
@@ -59,6 +58,7 @@ HTML_FILE="<!DOCTYPE html>
 echo -e "$HTML_FILE" > /data/web_static/releases/test/index.html
 bash -c "echo -e '$CONFIG' > /etc/nginx/sites-available/default"
 ln -sf '/etc/nginx/sites-available/default' '/etc/nginx/sites-enabled/default'
+chown -R ubuntu:ubuntu /data/
 
 # start or restart server
 if [ "$(pgrep -c nginx)" -le 0 ]; then
