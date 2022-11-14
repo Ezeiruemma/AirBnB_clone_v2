@@ -15,14 +15,8 @@ app.url_map.strict_slashes = False
 @app.route('/cities_by_states')
 def cities_by_states():
     '''The cities_by_states route.'''
-    all_states = list(storage.all(State).values())
-    all_states.sort(key=lambda x: x.name)
-    for state in all_states:
-        state.cities.sort(key=lambda x: x.name)
-    var = {
-        'states': all_states
-    }
-    return render_template('8-cities_by_states.html', **var)
+    states = storage.all("State")
+    return render_template('8-cities_by_states.html', states=states)
 
 
 @app.teardown_appcontext
